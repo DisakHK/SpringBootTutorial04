@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import jakarta.validation.Valid;
 
@@ -28,13 +29,13 @@ public class ProductController {
 
     private static final List<Map<String, String>> products = new ArrayList<>(List.of(
 
-            Map.of("id", "1", "name", "TV", "description", "Best TV"),
+            Map.of("id", "1", "name", "TV", "description", "Best TV", "price", "700"),
 
-            Map.of("id", "2", "name", "iPhone", "description", "Best iPhone"),
+            Map.of("id", "2", "name", "iPhone", "description", "Best iPhone", "price", "100"),
 
-            Map.of("id", "3", "name", "Chromecast", "description", "Best Chromecast"),
+            Map.of("id", "3", "name", "Chromecast", "description", "Best Chromecast", "price", "335"),
 
-            Map.of("id", "4", "name", "Glasses", "description", "Best Glasses")
+            Map.of("id", "4", "name", "Glasses", "description", "Best Glasses", "price", "10")
 
     ));
 
@@ -63,56 +64,55 @@ public class ProductController {
 
     }
 
-    @PostMapping("/products/save")
-
-    public String save(@Valid @ModelAttribute("productForm") ProductForm productForm, BindingResult result,
-            Model model) {
-
+   @PostMapping("/products/save")
+    public String save(@Valid @ModelAttribute("productForm") ProductForm productForm, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
         if (result.hasErrors()) {
-
             model.addAttribute("title", "Create Product");
-
             return "product/create";
-
         }
 
         // Simulación de guardar el producto en la lista (sin persistencia en DB)
-
         Map<String, String> newProduct = new HashMap<>();
-
         newProduct.put("id", String.valueOf(products.size() + 1));
-
         newProduct.put("name", productForm.getName());
-
-        newProduct.put("description", "Price: $" + productForm.getPrice());
-
+        newProduct.put("description", "Best " + productForm.getName());
+        newProduct.put("price", String.valueOf(productForm.getPrice()));
         products.add(newProduct);
 
-        return "redirect:/products";
+        redirectAttributes.addFlashAttribute("message", "Producto creado correctamente!");
 
+        return "redirect:/products";
     }
 
     @GetMapping("/products/{id}")
 
-    public String show(@PathVariable String id, Model model) {
+public String show(@PathVariable String id, Model model) {
 
+    try {
         int productId = Integer.parseInt(id) - 1;
-
+        
         if (productId < 0 || productId >= products.size()) {
-
+            
             return "redirect:/products";
-
+            
         }
-
         Map<String, String> product = products.get(productId);
+    
+    model.addAttribute("title", product.get("name") + " - Online Store");
+    
+    model.addAttribute("subtitle", product.get("name") + " - Product Information");
+    
+    model.addAttribute("product", product);
+    
+    return "product/show";
 
-        model.addAttribute("title", product.get("name") + " - Online Store");
-
-        model.addAttribute("subtitle", product.get("name") + " - Product Information");
-
-        model.addAttribute("product", product);
-
-        return "product/show";
-
+    } catch (NumberFormatException e) {
+        return "redirect:/";
     }
+    
+
+
+    
+
+}
 }

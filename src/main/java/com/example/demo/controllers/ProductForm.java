@@ -2,6 +2,7 @@ package com.example.demo.controllers;
 import jakarta.validation.constraints.NotEmpty;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 
 public class ProductForm {
@@ -13,6 +14,7 @@ private String name;
 
 
 @NotNull(message = "The price is required")
+@Positive(message = "The price must be a positive number")
 
 private Double price;
 
