@@ -9,7 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import org.springframework.web.bind.annotation.ModelAttribute;
-
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import jakarta.validation.Valid;
@@ -92,4 +92,27 @@ public class ProductController {
 
     }
 
+    @GetMapping("/products/{id}")
+
+    public String show(@PathVariable String id, Model model) {
+
+        int productId = Integer.parseInt(id) - 1;
+
+        if (productId < 0 || productId >= products.size()) {
+
+            return "redirect:/products";
+
+        }
+
+        Map<String, String> product = products.get(productId);
+
+        model.addAttribute("title", product.get("name") + " - Online Store");
+
+        model.addAttribute("subtitle", product.get("name") + " - Product Information");
+
+        model.addAttribute("product", product);
+
+        return "product/show";
+
+    }
 }
