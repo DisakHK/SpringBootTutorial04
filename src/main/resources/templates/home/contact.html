@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+    <title th:text="${title}">Contact</title>
+</head>
+<body>
+
+<div th:replace="~{fragments/header :: header}"></div>
+
+<div class="container my-4">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+
+            <div class="card">
+                <div class="card-header">contátanos</div>
+                <div class="card-body">
+
+                    <form th:action="@{/contact/send}" method="post" th:object="${contactForm}">
+                        <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger">
+                            <ul>
+                                <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                            </ul>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="name" class="form-label">Tu nombre, bebé</label>
+                            <input type="text" id="name" class="form-control" th:field="*{name}">
+                        </div>
+                        <div class="mb-2">
+                            <label for="phone" class="form-label">Ey bombón, dame tu número de teléfono</label>
+                            <input type="text" id="phone" class="form-control" th:field="*{phone}">
+                        </div>
+                         <div class="mb-2">
+                            <label for="address" class="form-label">Sí? y dónde vivís? </label>
+                            <input type="text" id="address" class="form-control" th:field="*{address}">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="email" class="form-label">Tu correo electrónico, corazón</label>
+                            <input type="email" id="email" class="form-control" th:field="*{email}">
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="message" class="form-label">Tu mensaje, cariño</label>
+                            <textarea id="message" rows="4" class="form-control" th:field="*{message}"></textarea>
+                        </div>
+
+                        <input type="submit" class="btn btn-primary" value="Envialo, cuchurrumí">
+                    </form>
+
+                    <div th:if="${success}" class="alert alert-success mt-3" th:text="${success}"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+</body>
+</html>
